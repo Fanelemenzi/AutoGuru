@@ -3,9 +3,18 @@ import datetime
 
 # Create your models here.
 
-#Identification and Technical Specification
+# Vin model
 class Vin(models.Model):
-	vin_number = models.CharField(max_length=15)
+	vin_number = models.CharField(max_length=20, default=None)
+
+	def __str__(self):
+		return self.vin_number
+
+
+
+#Identification and Technical Specification
+class Specs(models.Model):
+	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE)
 	vehicle_id = models.CharField(max_length=20, default='')
 	make = models.CharField(max_length=30)
 	model = models.CharField(max_length=30)
@@ -17,7 +26,7 @@ class Vin(models.Model):
 	image = models.ImageField(upload_to='uploads/vin')
 
 	def __str__(self):
-		return self.vin_number
+		return self.vehicle_id
 
 
 #160-Point-Check
@@ -31,7 +40,7 @@ class Inspection(models.Model):
 		"F3" : "Failed"
 	}
 
-	vin_number = models.CharField(max_length=20, default='')
+	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE)
 	inspection_number = models.CharField(max_length=20)
 	year = models.CharField(max_length=4)
 	inspection_result = models.CharField(max_length=30, 
@@ -45,13 +54,13 @@ class Inspection(models.Model):
 
 #Vehicle History
 class History(models.Model):
-	vin_number = models.CharField(max_length=20, default='')
+	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE)
 	date_of_service = models.DateField()
 	mileage_at_service = models.IntegerField()
 	worked_performed = models.CharField(max_length=200)
 	performed_by = models.CharField(max_length=50)
 	cost = models.DecimalField(max_digits=6, default=0, decimal_places=2)
-	notes = models.CharField(max_length=2000)
+	notes = models.CharField(max_length=2000, blank=True)
 
-	def __str__(self):
+	def __int__(self):
 		return self.vin_number
