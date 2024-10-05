@@ -12,6 +12,29 @@
         <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
+        <style>
+            body{
+                font-family: Arial, sans-serif:
+                margin: 20px
+            }
+            table{
+                width: 100%,
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            th, td {
+                padding: 12px;
+                border: 1px solid #ccc;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            img {
+                max-width: 150px;
+                height: auto;
+            }
+        </style>
     </head>
     <body>
         <!-- Responsive navbar-->
@@ -38,38 +61,98 @@
             <p class="m-0 text-center text-white"> Find the vehicle you are looking for here using the VIN number.</p>
         </header>
         <br></br>
-       <div class="container">
-        <div class="row">
-            <center>
-                <div class="col-8">
-                    <br></br>
-                    <div class="card text-center">
-                        <div class="card-body">
-                          <h5 class="card-title">Find the Service History of the vehicle you are buying</h5>
-                          <p class="card-text">Enter the VIN number of the vehicle you want to buy below and find the service history.</p>
-                          <form method="POST" action="{% url 'search' %}">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <input type="text" class="form-control" placeholder="Enter VIN number here" name="searched">
-                                <br></br>
-                                <button type="submit" class="btn btn-secondary">
-                                    Search
-                        </button>
-                          </form>
-                        </div>
-                      </div>
-                </div>
-                <br/>
-                {% if searched %}
-                    {% for specs in searched %}
-                    {{specs}}<br/>
-                    {% endfor %}
-                {% endif %}
-            </center>
-           
-        </div>
-    </div>
+       <body>
+        <h1> vehicle Search Results</h1>
 
+        <form method="GET">
+            <label for="vin_number">Enter Vin:</label>
+            <input type="text" id="vin_number" name="vin_number" required>
+            <button type="submit"> Search </button>
+        </form>
+
+        {% if vehicle %}
+            <h2>Vehicle Details</h2>
+            <table>
+                <tr>
+                    <th>Image</th>
+                    <th>Vin Number</th>
+                    <th>Vehicle ID</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Body Type</th>
+                </tr>
+                <tr>
+                    <td> {% if specs.image %}
+                        <img src="{{ specs.image.url}}" alt="{{specs.make}} {{specs.model}}"
+                          {% else %}
+                            No Image Available
+                          {% endif %}
+                    </td>
+                    <td>{{ vehicle.vin_number}}</td>
+                    <td>{{ specs.vehicle_id}}</td>
+                    <td>{{ specs.make}}</td>
+                    <td>{{ specs.model}}</td>
+                    <td>{{ specs.body_type}}</td>
+                </tr>
+            </table>
+
+            <h2>Inspection Details</h2>
+            <table>
+                <tr>
+                    <th>Inspection Number</th>
+                    <th>Year</th>
+                    <th>Inspection Results</th>
+                    <th>AG Rating</th>
+                    <th>Inspection date</th>
+                    <th>link to Results</th>
+                </tr>
+                {% for inspections in inspections %}
+                <tr>
+                    <td>{{ inspections.inspection_number}}</td>
+                    <td>{{ inspections.year}}</td>
+                    <td>{{ inspections.inspection_result}}</td>
+                    <td>{{ inspections.ag_rating}}</td>
+                    <td>{{ inspections.inspection_date}}</td>
+                    <td>{{ inspections.link_to_results}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4"> No inspection records available </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <h2>Service History</h2>
+            <table>
+                <tr>
+                    <th>Date of Service</th>
+                    <th>Mileage of Service</th>
+                    <th>Work Performed</th>
+                    <th>Performed By</th>
+                    <th>Cost</th>
+                    <th>Notes</th>
+                </tr>
+                {% for history in history_records %}
+                <tr>
+                    <td>{{ history.date_of_service }}</td>
+                    <td>{{ history.mileage_at_service }}</td>
+                    <td>{{ history.worked_performed }}</td>
+                    <td>{{ history.performed_by }}</td>
+                    <td>{{ history.cost }}</td>
+                    <td>{{ history.notes }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6"> No Service history available</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+                <p>No vehicle found for the given VIN.</p>
+            {% endif %}
+
+                    
+        
+       </body>
       <br></br>
         <!-- Footer-->
         <footer class="py-5 bg-dark">

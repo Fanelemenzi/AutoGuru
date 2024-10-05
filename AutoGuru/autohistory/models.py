@@ -5,7 +5,7 @@ import datetime
 
 # Vin model
 class Vin(models.Model):
-	vin_number = models.CharField(max_length=20, default=None)
+	vin_number = models.CharField(max_length=20, default=None, unique= True)
 
 	def __str__(self):
 		return self.vin_number
@@ -14,7 +14,7 @@ class Vin(models.Model):
 
 #Identification and Technical Specification
 class Specs(models.Model):
-	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE)
+	vin_number = models.OneToOneField(Vin, on_delete=models.CASCADE, related_name='specs')
 	vehicle_id = models.CharField(max_length=20, default='')
 	make = models.CharField(max_length=30)
 	model = models.CharField(max_length=30)
@@ -40,7 +40,7 @@ class Inspection(models.Model):
 		"F3" : "Failed"
 	}
 
-	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE)
+	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE, related_name='inspections')
 	inspection_number = models.CharField(max_length=20)
 	year = models.CharField(max_length=4)
 	inspection_result = models.CharField(max_length=30, 
@@ -54,7 +54,7 @@ class Inspection(models.Model):
 
 #Vehicle History
 class History(models.Model):
-	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE)
+	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE, related_name='history')
 	date_of_service = models.DateField()
 	mileage_at_service = models.IntegerField()
 	worked_performed = models.CharField(max_length=200)
