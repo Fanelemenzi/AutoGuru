@@ -31,14 +31,15 @@ class Specs(models.Model):
 
 #160-Point-Check
 class Inspection(models.Model):
-	RESULT_CHOICES = {
-		"P1" : "Passed",
-		"P2" : "Passed with minor Defects",
-		"P3" : "Passed with major Defects",
-		"F1" : "Failed due to minor Defects",
-		"F2" : "Failed due to major Defects",
-		"F3" : "Failed"
-	}
+
+	RESULT_CHOICES = [
+		("PAS", "Passed"),
+		("PMD",  "Passed with minor Defects"),
+		("PJD", "Passed with major Defects"),
+		("FMD",  "Failed due to minor Defects"),
+		("FJD",  "Failed due to major Defects"),
+		("FAI",  "Failed"),
+	]
 
 	vin_number = models.ForeignKey(Vin, on_delete=models.CASCADE, related_name='inspections')
 	inspection_number = models.CharField(max_length=20)

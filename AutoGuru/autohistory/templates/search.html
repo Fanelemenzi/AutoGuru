@@ -11,7 +11,10 @@
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <link href="{% static "css/styles.css" %}" rel="stylesheet" />
         <style>
             body{
                 font-family: Arial, sans-serif:
@@ -46,9 +49,6 @@
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link"  href="{% url 'home'%}">Home</a></li>
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'search'%}">Search</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Services</a></li>
                     </ul>
                 </div>
             </div>
@@ -62,94 +62,133 @@
         </header>
         <br></br>
        <body>
-        <h1> vehicle Search Results</h1>
 
-        <form method="GET">
-            <label for="vin_number">Enter Vin:</label>
-            <input type="text" id="vin_number" name="vin_number" required>
-            <button type="submit"> Search </button>
-        </form>
+        <!-- Search form starts here -->
+ 
+         <div class="container-fluid">
+            <div class="row">
+                <center>
+                    <div class="col-10">
 
-        {% if vehicle %}
-            <h2>Vehicle Details</h2>
-            <table>
-                <tr>
-                    <th>Image</th>
-                    <th>Vin Number</th>
-                    <th>Vehicle ID</th>
-                    <th>Make</th>
-                    <th>Model</th>
-                    <th>Body Type</th>
-                </tr>
-                <tr>
-                    <td> {% if specs.image %}
-                        <img src="{{ specs.image.url}}" alt="{{specs.make}} {{specs.model}}"
-                          {% else %}
-                            No Image Available
-                          {% endif %}
-                    </td>
-                    <td>{{ vehicle.vin_number}}</td>
-                    <td>{{ specs.vehicle_id}}</td>
-                    <td>{{ specs.make}}</td>
-                    <td>{{ specs.model}}</td>
-                    <td>{{ specs.body_type}}</td>
-                </tr>
-            </table>
+                        <div class="card">
+                            <div class="card-header">
+                              <h2> Search Here </h2>
+                            </div>
+                            <div class="card-body">
+                              
+                                <form method="GET">
+                                    <input class = "form-control" type="text" id="vin_number" placeholder="Enter Vin Number Here" name="vin_number" required>
+                                    <button type="submit" class="btn btn-primary"> Search </button>
+                                  </form>
+                                  
+                                  <!-- Search form ends here -->
+                                  
+                                {% if vehicle %}
+                                    <h2>Vehicle Images</h2>
+                                    <table>
+                                        <tr>
+                                        <th>Image</th>
+                                        </tr>
+                                        <td> {% if specs.image %}
+                                            <img src="{{ specs.image.url}}" alt="{{specs.make}} {{specs.model}}"
+                                              {% else %}
+                                                No Image Available
+                                              {% endif %}
+                                        </td>
+                                        <tr>
 
-            <h2>Inspection Details</h2>
-            <table>
-                <tr>
-                    <th>Inspection Number</th>
-                    <th>Year</th>
-                    <th>Inspection Results</th>
-                    <th>AG Rating</th>
-                    <th>Inspection date</th>
-                    <th>link to Results</th>
-                </tr>
-                {% for inspections in inspections %}
-                <tr>
-                    <td>{{ inspections.inspection_number}}</td>
-                    <td>{{ inspections.year}}</td>
-                    <td>{{ inspections.inspection_result}}</td>
-                    <td>{{ inspections.ag_rating}}</td>
-                    <td>{{ inspections.inspection_date}}</td>
-                    <td>{{ inspections.link_to_results}}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4"> No inspection records available </td>
-                </tr>
-                {% endfor %}
-            </table>
-            <h2>Service History</h2>
-            <table>
-                <tr>
-                    <th>Date of Service</th>
-                    <th>Mileage of Service</th>
-                    <th>Work Performed</th>
-                    <th>Performed By</th>
-                    <th>Cost</th>
-                    <th>Notes</th>
-                </tr>
-                {% for history in history_records %}
-                <tr>
-                    <td>{{ history.date_of_service }}</td>
-                    <td>{{ history.mileage_at_service }}</td>
-                    <td>{{ history.worked_performed }}</td>
-                    <td>{{ history.performed_by }}</td>
-                    <td>{{ history.cost }}</td>
-                    <td>{{ history.notes }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6"> No Service history available</td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% else %}
-                <p>No vehicle found for the given VIN.</p>
-            {% endif %}
+                                        </tr>
+                                    </table>
+                                    <h2>Vehicle Details</h2>
+                                    <table>
+                                        <tr> 
+                                            <th>Vin Number</th>
+                                            <th>Vehicle ID</th>
+                                            <th>Make</th>
+                                            <th>Model</th>
+                                            <th>Body Type</th>
+                                            <th>Manufacture Year</th>
+                                            <th>Engine Code</th>
+                                            <th>Powertrain Power</th>
+                                            <th>Transmission Type</th>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ vehicle.vin_number}}</td>
+                                            <td>{{ specs.vehicle_id}}</td>
+                                            <td>{{ specs.make}}</td>
+                                            <td>{{ specs.model}}</td>
+                                            <td>{{ specs.body_type}}</td>
+                                            <td>{{ specs.manufacture_year}}</td>
+                                            <td>{{ specs.engine_code}}</td>
+                                            <td>{{ specs.powertrain_power}}</td>
+                                            <td>{{ specs.transmission_type}}</td>
+                                        </tr>
+                                    </table>
+                                  
+                                    <h2>Inspection Details</h2>
+                                    <table>
+                                        <tr>
+                                            <th>Inspection Number</th>
+                                            <th>Year</th>
+                                            <th>Inspection Results</th>
+                                            <th>AG Rating</th>
+                                            <th>Inspection date</th>
+                                            <th>link to Results</th>
+                                        </tr>
+                                        {% for inspections in inspections %}
+                                        <tr>
+                                            <td>{{ inspections.inspection_number}}</td>
+                                            <td>{{ inspections.year}}</td>
+                                            <td>{{ inspections.inspection_result}}</td>
+                                            <td>{{ inspections.ag_rating}}</td>
+                                            <td>{{ inspections.inspection_date}}</td>
+                                            <td>{{ inspections.link_to_results}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4"> No inspection records available </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                    <h2>Service History</h2>
+                                    <table>
+                                        <tr>
+                                            <th>Date of Service</th>
+                                            <th>Mileage at Service</th>
+                                            <th>Work Performed</th>
+                                            <th>Performed By</th>
+                                            <th>Cost</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                        {% for history in history_records %}
+                                        <tr>
+                                            <td>{{ history.date_of_service }}</td>
+                                            <td>{{ history.mileage_at_service }}</td>
+                                            <td>{{ history.worked_performed }}</td>
+                                            <td>{{ history.performed_by }}</td>
+                                            <td>{{ history.cost }}</td>
+                                            <td>{{ history.notes }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="6"> No Service history available</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                    {% else %}
+                                        <p>No vehicle found for the given VIN.</p>
+                                {% endif %} 
 
+
+                            </div>
+                          </div> 
+                    </div>
+                </center>
+            </div>
+
+         </div>
+
+        <!-- Search Ends here-->
                     
         
        </body>
